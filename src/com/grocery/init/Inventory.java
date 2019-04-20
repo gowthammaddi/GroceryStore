@@ -3,13 +3,13 @@ package com.grocery.init;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.grocery.discount.ItemDiscountCalculator;
 import com.grocery.model.Item;
 import com.grocery.model.LineItem;
 
 public class Inventory {
 	private static Inventory store;
 	private List<LineItem> itemList;
+	private final String NEWLINE = "\n";
 	
 	private Inventory () {
 		itemList = new ArrayList<LineItem>();
@@ -25,7 +25,7 @@ public class Inventory {
 	
 	public static Inventory getInstance() {
 		if (store == null) {
-			return new Inventory();
+			store = new Inventory();
 		}
 		return store;
 	}
@@ -44,8 +44,21 @@ public class Inventory {
 	public void debit(LineItem debitItem) {
 		for(LineItem item: itemList) {
 			if (item.getItem().equals(debitItem.getItem())) {
-				item.reduceQuantity(debitItem.getQuantity());
+				item.reduceQuantity(debitItem.getQuantity()); 
 			}
 		}
+	}
+	
+	public String printInventory() {
+		StringBuilder inventoryString = new StringBuilder();
+		inventoryString.append("Inventory Details: ").append(NEWLINE);
+		
+		for(LineItem item: itemList) {
+			inventoryString.append(item.getItem().getName()).append(" ")
+						   .append(item.getQuantity())
+						   .append(NEWLINE);
+		}
+		
+		return inventoryString.toString();
 	}
 }

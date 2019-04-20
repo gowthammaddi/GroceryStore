@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
-	private List<LineItem> items;
+	private List<LineItem> itemList;
 	private Integer id;
 	private Customer customer;
 	private boolean isEmployeeOrder;
@@ -12,7 +12,7 @@ public class Order {
 	private static final String NEWLINE = "\n";
 	
 	public Order(Customer customer, boolean isEmployee, Integer id) {
-		items = new ArrayList<LineItem>();
+		itemList = new ArrayList<LineItem>();
 		this.customer = customer;
 		this.isEmployeeOrder = isEmployee;
 		this.id = id;
@@ -20,12 +20,12 @@ public class Order {
 	}
 	
 	public void addItem(LineItem item) {
-		items.add(item);
+		itemList.add(item);
 		totalOrderValue += item.getPrice();
 	}
 	
 	public List<LineItem> getItems() {
-		return items;
+		return itemList;
 	}
 	
 	public void setId(Integer id) {
@@ -67,7 +67,7 @@ public class Order {
 				.append(isEmployeeOrder).append(NEWLINE);
 		}
 		
-		for(LineItem item: items) {
+		for(LineItem item: itemList) {
 			bill.append(item).append(NEWLINE);
 		}
 		

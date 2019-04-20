@@ -22,10 +22,11 @@ public class Main {
 		itemList.add(new LineItem(amul, 5));
 		itemList.add(new LineItem(medimix, 1));
 		
-		Customer customer = new Customer("Gowtham", 70);
+		Customer customer = new Customer("Gowtham", 23);
 		
 		Register reg1 = new Register();
 		System.out.println(reg1.confirmOrder(reg1.createOrder(itemList, customer, false)));
+		System.out.println(Inventory.getInstance().printInventory());
 		
 	}
 

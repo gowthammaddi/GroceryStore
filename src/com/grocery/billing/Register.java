@@ -11,7 +11,7 @@ import com.grocery.discount.*;
 
 public class Register {
 	public Double saleValueForTheDay;
-	public Inventory store = Inventory.getInstance();
+	public Inventory store;
 	public List<ItemDiscountCalculator> itemDiscountCalculatorList;
 	public List<OrderDiscountCalculator> orderDiscountCalculatorList;
 	
@@ -19,6 +19,7 @@ public class Register {
 	
 	public Register() {
 		saleValueForTheDay = 0d;
+		store = Inventory.getInstance();
 		itemDiscountCalculatorList = new ArrayList<ItemDiscountCalculator>();
 		orderDiscountCalculatorList = new ArrayList<OrderDiscountCalculator>();
 		
