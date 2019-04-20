@@ -1,28 +1,32 @@
 package com.grocery.init;
 
-import com.grocery.billing.Order;
+import com.grocery.model.Order;
+import com.grocery.model.Customer;
+import com.grocery.model.Item;
+import com.grocery.model.LineItem;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.grocery.billing.Register;
-import com.grocery.customer.Customer;
-import com.grocery.item.LineItem;
-import com.grocery.item.Product;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Product lays = new Product("lays", "gowtham");
-		Product amul = new Product("amul", "maddi");
+		Item lays = new Item("lays", 10d);
+		Item amul = new Item("amul", 24d);
+		Item medimix = new Item("medimix", 34d);
 		
-		LineItem item1 = new LineItem(lays, 2);
-		LineItem item2 = new LineItem(amul, 5);
+		List<LineItem> itemList = new ArrayList<LineItem>();
+		itemList.add(new LineItem(lays, 2));
+		itemList.add(new LineItem(amul, 5));
+		itemList.add(new LineItem(medimix, 1));
 		
-		Order order1 = new Order();
-		order1.addItem(item1);
-		order1.addItem(item2);
-		
-		Customer gowtham = new Customer("Gowtham", 24, false);
+		Customer customer = new Customer("Gowtham", 70);
 		
 		Register reg1 = new Register();
-		System.out.println(reg1.confirmOrder(gowtham, order1));
+		System.out.println(reg1.confirmOrder(reg1.createOrder(itemList, customer, false)));
+		
 	}
 
 }

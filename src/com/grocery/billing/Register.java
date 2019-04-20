@@ -1,35 +1,64 @@
 package com.grocery.billing;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.grocery.customer.Customer;
-import com.grocery.init.GroceryStore;
-import com.grocery.item.LineItem;
-import com.grocery.pricing.Pricing;
+import com.grocery.init.Inventory;
+import com.grocery.model.Order;
+import com.grocery.model.Customer;
+import com.grocery.model.LineItem;
+import com.grocery.discount.*;
 
 public class Register {
-	public Double saleValueForTheDay = 0.0;
-	public GroceryStore store = GroceryStore.getInstance();
+	public Double saleValueForTheDay;
+	public Inventory store = Inventory.getInstance();
+	public List<ItemDiscountCalculator> itemDiscountCalculatorList;
+	public List<OrderDiscountCalculator> orderDiscountCalculatorList;
 	
-	private Double totalCartValue(List<LineItem> items) {
-		Double cartValue = 0.0;
-		for (LineItem item: items) {
-			cartValue += item.totalItemPrice();
-		}
+	private Integer id = 1;
+	
+	public Register() {
+		saleValueForTheDay = 0d;
+		itemDiscountCalculatorList = new ArrayList<ItemDiscountCalculator>();
+		orderDiscountCalculatorList = new ArrayList<OrderDiscountCalculator>();
 		
-		return cartValue;
+		orderDiscountCalculatorList.add(new EmployeeOrderDiscountCalculator());
+		orderDiscountCalculatorList.add(new SeniorCitizenOrderDiscountCalculator());
+		
+		itemDiscountCalculatorList.add(new ItemCategoryDiscountCalculator());
 	}
 	
-	public String confirmOrder(Customer customer, Order order) {
-		List<LineItem> items = order.getItems();
-		saleValueForTheDay += totalCartValue(items);		
-		for(LineItem item: items) {
-			item = Pricing.discountedItem(customer, item);
+	public Order createOrder(List<LineItem> itemList, Customer customer, boolean isEmployee) {
+		Order order = new Order(customer, isEmployee, id++);
+		for(LineItem item: itemList) {
+			for(ItemDiscountCalculator itemDiscountCalculator: itemDiscountCalculatorList) {
+				item = itemDiscountCalculator.applyDiscount(item);
+			}
+			order.addItem(item);
 		}
+		
+		for(OrderDiscountCalculator orderDiscountCalculator: orderDiscountCalculatorList) {
+			orderDiscountCalculator.applyDiscount(order);
+		}
+		
+		return order;
+	}
+	
+	public String confirmOrder(Order order) {
+		List<LineItem> items = order.getItems();
+		saleValueForTheDay += totalOrderValue(items);		
 		debitFromStore(items);
-		String bill = generateBill(customer, items);
+		String bill = printBill(order);
 		
 		return bill;
+	}
+	
+	private Double totalOrderValue(List<LineItem> items) {
+		Double orderValue = 0.0;
+		for (LineItem item: items) {
+			orderValue += item.getPrice();
+		}
+		return orderValue;
 	}
 	
 	private void debitFromStore(List<LineItem> items) {
@@ -38,13 +67,7 @@ public class Register {
 		}
 	}
 	
-	private String generateBill(Customer customer, List<LineItem> items) {
-		StringBuilder bill = new StringBuilder();
-		for(LineItem item: items) {
-			bill.append(item).append("\n");
-		}
-		bill.append("Total Cart Value purchased by " + customer.getName() + ": " + totalCartValue(items));
-		
-		return bill.toString();
+	private String printBill(Order order) {
+		return order.toString();
 	}
 }
