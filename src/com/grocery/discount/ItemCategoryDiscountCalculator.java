@@ -1,21 +1,33 @@
 package com.grocery.discount;
 
+import java.io.FileInputStream;
 import java.util.HashMap;
+import java.util.Properties;
 
+import com.grocery.model.Item;
 import com.grocery.model.LineItem;
 
 public class ItemCategoryDiscountCalculator implements ItemDiscountCalculator {
 
-	/* Eg.,
-	 * Category, discount%
-	 * lays, 5%
-	 * amul, 13%
-	 */
-	HashMap<String, Double> discountMap = new HashMap<String, Double>();
+	private static HashMap<String, Double> discountMap = new HashMap<String, Double>();
 	
 	public ItemCategoryDiscountCalculator() {
-		discountMap.put("lays", 5d);
-		discountMap.put("amul", 13d);
+		Properties property = new Properties();
+		try {
+			property.load(new FileInputStream("./resources/discount.properties"));
+			
+			String[] productNames = property.getProperty("productName").split(",");
+			String[] productPrices = property.getProperty("productDiscount").split(",");
+
+			for (int i=0; i<productNames.length; i++) {
+				String productName = productNames[i];
+				Double productDiscount = Double.parseDouble(productPrices[i]);
+				
+				discountMap.put(productName, productDiscount);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

@@ -1,6 +1,5 @@
 package com.grocery.init;
 
-import com.grocery.model.Order;
 import com.grocery.model.Customer;
 import com.grocery.model.Item;
 import com.grocery.model.LineItem;
@@ -26,7 +25,7 @@ public class Main {
 		
 		Register reg1 = new Register();
 		System.out.println(reg1.confirmOrder(reg1.createOrder(itemList, customer, false)));
-		System.out.println(Inventory.getInstance().printInventory());
+//		System.out.println(Inventory.getInstance().printInventory());
 		
 	}
 

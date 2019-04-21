@@ -1,7 +1,11 @@
 package com.grocery.init;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.grocery.model.Item;
 import com.grocery.model.LineItem;
@@ -17,10 +21,25 @@ public class Inventory {
 	}
 	
 	private void init() {
-		itemList.add(new LineItem(new Item("lays", 10.0), 100));
-		itemList.add(new LineItem(new Item("appy", 15.0), 100));
-		itemList.add(new LineItem(new Item("medimix", 34.0), 150));
-		itemList.add(new LineItem(new Item("amul", 24.0), 75));
+		Properties property = new Properties();
+		try {
+			property.load(new FileInputStream("./resources/inventory.properties"));
+			
+			String[] productNames = property.getProperty("productName").split(",");
+			String[] productPrices = property.getProperty("productPrice").split(",");
+			String[] productQuantities = property.getProperty("productQuantity").split(",");
+
+			for (int i=0; i<productNames.length; i++) {
+				String productName = productNames[i];
+				Double productPrice = Double.parseDouble(productPrices[i]);
+				Integer productQuantity = Integer.parseInt(productQuantities[i]);
+				
+				itemList.add(new LineItem(new Item(productName, productPrice), productQuantity));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static Inventory getInstance() {
